@@ -10,15 +10,13 @@ function fetchProduitInfoApi() {
     fetch(`http://localhost:3000/api/products/${id}`)
         .then(response => response.json())
         .then((data) => {
-            let settings = JSON.stringify(data);
-            console.log(JSON.parse(settings));
-            id = data;
-            createInfoProduit(id);
+            createInfoProduit(data);
         })
         .catch((err) => console.log(err));
 }
 
 fetchProduitInfoApi();
+
 // creation d'une fonction qui affiche les différents éléments
 // et qui prend un tableau en argument
 function createInfoProduit(arr) {
@@ -105,19 +103,11 @@ function createInfoProduit(arr) {
                 window.location.href = 'index.html';
             }
         }
-        array_produit = tabLocalStorage ?? [] ; 
+        // si tabLocalStorage existe, on l'ajoute à la variable array_produit
+        // s'il n'existe pas, on créer un tableau
+        array_produit = tabLocalStorage ?? []; 
         addProductStorage(array_produit, optionsProduit);
         popupConfirm(optionsProduit);
-        /* if (!tabLocalStorage) {
-            addProductStorage(tabLocalStorage, optionsProduit);
-            console.log(optionsProduit);
-            popupConfirm(optionsProduit);
-        } else {
-            tabLocalStorage = [];
-            addProductStorage(tabLocalStorage, optionsProduit);
-            console.log(optionsProduit);
-            popupConfirm(optionsProduit);
-        } */
     });
 
     //  modifier le prix dynamiquement suivant la quantité choisis

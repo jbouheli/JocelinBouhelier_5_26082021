@@ -1,4 +1,3 @@
-let tableauProduit = [];
 const ListeProduit = document.getElementById('items');
 
 const fetchProduitApi = async () => {
@@ -6,14 +5,13 @@ const fetchProduitApi = async () => {
     await fetch("http://localhost:3000/api/products")
         .then(reponse => reponse.json())
         .then((data) => {
-            // console.log(data);
             createCard(data);
         })
         .catch((err) => console.log(err))
 }
 fetchProduitApi();
 
-// création cartes
+// création des cartes contenant les produits
 
 function createCard(arr){
 
@@ -37,17 +35,11 @@ function createCard(arr){
         imgCarte.src = arr[i].imageUrl;
         imgCarte.setAttribute("alt", `${arr[i].altTxt}`);
 
-        /* let priceCarte = document.createElement('div');
-        arr[i].price = arr[i].price / 100;
-        priceCarte.innerHTML = new Intl.NumberFormat('fr-FR', {style: 'currency', currency: 'EUR'}).format(arr[i].price);
-        priceCarte.innerText = `${arr[i].price} €`;
-        priceCarte.classList.add('price'); */
-
-        // on append dans le lien
+        // on append les éléments dans le lien
         lienCarte.appendChild(imgCarte);
         lienCarte.appendChild(titreCarte);
         lienCarte.appendChild(descriptionCarte);
-        // lienCarte.appendChild(priceCarte);
+
         // on append le lien dans la carte
         carte.appendChild(lienCarte);
         

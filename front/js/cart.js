@@ -95,10 +95,10 @@ totalQuantity.innerText = `${tabLocalStorage.length}`;
 let totalPrice = document.getElementById('totalPrice');
 totalPrice.innerText = `${total_cart_price()}`;
 
-/* création d'une fonction qui prend un tableau en argument. la
-méthode reduce va parcourir le tableau et multiplier les quantités
-des éléments par leurs prix puis va les additionner et retourner la
-valeur finale */
+/* création d'une fonction qui prend un tableau en argument (par défaut,
+notre tabLocaStorage). la méthode reduce va parcourir le tableau et multiplier
+les quantités des éléments par leurs prix puis va les additionner et retourner
+la valeur finale */
 function total_cart_price(arr = tabLocalStorage){
     return arr.reduce(function(somme, p){
         return somme += p.quantity * p.price ;
@@ -131,34 +131,171 @@ function delete_product_to_cart(id_product){
     localStorage.setItem('panier', JSON.stringify(new_array));
 }
 
-/* ------------------------------------
---------récupération formulaire--------
------------------------------------- */
+/* ------------------------------------------------------------------------
+----------------------------------récupération formulaire------------------
+------------------------------------------------------------------------ */
 
+let form = document.querySelector('.cart__order__form');
 let order = document.getElementById('order');
-order.href = `./confirmation.html`;
+let orderId = document.getElementById('orderId');
+let inputName = document.getElementById('firstName');
+let inputLastName = document.getElementById('lastName');
+let inputAddress = document.getElementById('address');
+let inputCity = document.getElementById('city');
+let inputEmail = document.getElementById('email');
+
+// ---------- Création regex -------------
+
+form.firstName.addEventListener('change', function(){
+    // "this" est l'élément actuellement écouté par l'input avec le name firstName
+    validFirstName(this);
+});
+
+form.lastName.addEventListener('change', function(){
+    validLastName(this);
+});
+
+form.address.addEventListener('change', function(){
+    validAddress(this);
+});
+
+form.city.addEventListener('change', function(){
+    validCity(this);
+});
+
+form.email.addEventListener('change', function(){
+    validEmail(this);
+});
+
+// on créer une fonction pour la validation des noms avec expression régulière
+const validFirstName = (input_name) => {
+    let firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
+    let regexName = new RegExp('^[a-zA-Z]{2,21}$', 'g');
+    let valid = false;
+    let testName = regexName.test(input_name.value);
+    if (testName) {
+        firstNameErrorMsg.innerText = '';
+        valid = true;
+    } else {
+        firstNameErrorMsg.innerText = 'Veuillez entrer un prénom valide';
+    }
+    return valid;
+}
+
+const validLastName = (input_name) => {
+    let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
+    let regexName = new RegExp('^[a-zA-Z]{2,21}$', 'g');
+    let valid = false;
+    let testName = regexName.test(input_name.value);
+    if (testName) {
+        lastNameErrorMsg.innerText = '';
+        valid = true;
+    } else {
+        lastNameErrorMsg.innerText = 'Veuillez entrer un nom valide';
+    }
+    return valid;
+}
+
+const validAddress = (input_name) => {
+    let addressErrorMsg = document.getElementById('addressErrorMsg');
+    let regexAddress = new RegExp('^([0-9]*) ([a-zA-Z,\. ]*)$', 'g');
+    let valid = false;
+    let testAddress = regexAddress.test(input_name.value);
+    if (testAddress) {
+        addressErrorMsg.innerText = '';
+        valid = true;
+    } else {
+        addressErrorMsg.innerText = 'Veuillez entrer une adresse valide';
+    }
+    return valid;
+}
+
+const validCity = (input_name) => {
+    let cityErrorMsg = document.getElementById('cityErrorMsg');
+    let regexCity = new RegExp('^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$', 'g');
+    let valid = false;
+    let testCity = regexCity.test(input_name.value);
+    if (testCity) {
+        cityErrorMsg.innerText = '';
+        valid = true;
+    } else {
+        cityErrorMsg.innerText = 'Veuillez entrer une ville valide';
+    }
+    return valid;
+}
+
+const validEmail = (input_email) => {
+    let emailErrorMsg = document.getElementById('emailErrorMsg');
+    let regexEmail = new RegExp(
+        '^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g'
+    );
+    let valid = false;
+    // on créer une variable qui contient une valeur false ou true selon
+    // la valeur entré dans l'input et testé par le regexEmail
+    let testEmail = regexEmail.test(input_email.value);
+    if (testEmail) {
+        emailErrorMsg.innerText = '';
+        valid = true;
+    } else {
+        emailErrorMsg.innerText = 'Veuillez entrer une adresse e-mail valide';
+    }
+    return valid;
+}
+
+/* on créer une fonction qui prend un tableau en argument. Nous utilisons
+ensuite .map pour aller chercher et push l'id de chaque élément du 
+localStorage dans notre tableau en argument */
+function getId(arr) {
+    tabLocalStorage.map(e => {
+        return arr.push(e.id);
+    });
+}
 
 order.addEventListener('click', (e) => {
-    let user = {
-        prenom: document.getElementById('firstName').value,
-        nom: document.getElementById('lastName').value,
-        adresse: document.getElementById('address').value,
-        ville: document.getElementById('city').value,
-        email: document.getElementById('email').value
-    }
+    e.preventDefault();
+    // nous créons un tableau vide puis on le rempli avec getId
+    let productId = [];
+    getId(productId);
 
-    const addProductStorage = (arr, user) => {
-        arr.push(user);
-        localStorage.setItem('users', JSON.stringify(arr));
-    }
-
-    if (usersLocalStorage) {
-        addProductStorage(usersLocalStorage, user);
-        console.log(usersLocalStorage);
+    /* si les valeurs retournées par nos fonction de validations sont à true
+    nous créons l'objet order qui contient les valeurs entrés dans les inputs
+    du formulaire + un tableau contenant les id des produits dans le panier */
+    if (
+        !validFirstName(inputName) ||
+        !validLastName(inputLastName) ||
+        !validAddress(inputAddress) ||
+        !validCity(inputCity) ||
+        !validEmail(inputEmail)
+        ) {
+        e.preventDefault();
     } else {
-        usersLocalStorage = [];
-        addProductStorage(usersLocalStorage, user);
-        console.log(usersLocalStorage);
+        let order = {
+            contact: {
+                firstName: inputName.value,
+                lastName: inputLastName.value,
+                address: inputAddress.value,
+                city: inputCity.value,
+                email: inputEmail.value
+            },
+            products: productId
+        };
+
+        /* nous envoyons notre objet de commande (formaté au format JSON) à 
+        l'adresse /products de l'API qui contient une entrée du même nom */
+        fetch('http://localhost:3000/api/products/order', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(order)
+        })
+        .then((reponse) => reponse.json())
+        .then((data) => {
+            localStorage.clear();
+            document.location.href = `confirmation.html?order_id=${data.orderId}`;
+        })
+        .catch((err) => console.log(err));
     }
-});
+})
+
 /* map(), include(), filter() */
