@@ -1,5 +1,4 @@
 let tabLocalStorage = JSON.parse(localStorage.getItem('panier'));
-let usersLocalStorage = JSON.parse(localStorage.getItem('users'));
 
 let section = document.getElementById('cart__items');
 
@@ -115,7 +114,7 @@ function adjust_quantity(id_produit, quantity){
         }
         return p;
     });
-    /* nous remplaçons l'ancienne clée panier avec le nouveau
+    /* nous remplaçons l'ancienne valeur de la clé panier avec le nouveau
     tableau formaté en JSON  */
     localStorage.setItem('panier', JSON.stringify(new_array));
 }
@@ -126,7 +125,7 @@ function delete_product_to_cart(id_product){
     let new_array = tabLocalStorage.filter(p => {
         return p.id != id_product;
     })
-    /* nous remplaçons l'ancienne clée panier avec le nouveau
+    /* nous remplaçons l'ancienne valeur de la clé panier avec le nouveau
     tableau formaté en JSON  */
     localStorage.setItem('panier', JSON.stringify(new_array));
 }
@@ -296,6 +295,4 @@ order.addEventListener('click', (e) => {
         })
         .catch((err) => console.log(err));
     }
-})
-
-/* map(), include(), filter() */
+});

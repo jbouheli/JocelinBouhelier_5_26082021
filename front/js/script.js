@@ -35,7 +35,7 @@ function createCard(arr){
         imgCarte.src = arr[i].imageUrl;
         imgCarte.setAttribute("alt", `${arr[i].altTxt}`);
 
-        // on append les éléments dans le lien
+        // on append les éléments dans l'ordre d'affichage dans le lien
         lienCarte.appendChild(imgCarte);
         lienCarte.appendChild(titreCarte);
         lienCarte.appendChild(descriptionCarte);

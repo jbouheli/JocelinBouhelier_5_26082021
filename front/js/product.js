@@ -78,31 +78,50 @@ function createInfoProduit(arr) {
         et 1 objet à y ajouter avec la methode push */
         const addProductStorage = (arr, obj) => {
             // je créer une variable de test qui est false
-            let alreadyExist = false;
-            arr.map( p => {
-                // si l'id et la couleur du produit à ajouter correspond déjà
-                // à un produit existant, on incrémente la quantité
-                if(p.id == obj.id && p.colors == obj.colors){
-                    p.quantity += obj.quantity;
-                    // et la variable passe à true
-                    alreadyExist = true;
+            let valid = false;
+
+            if (verifColor(select.value)) {
+                arr.map( p => {
+                    // si l'id et la couleur du produit à ajouter correspond déjà
+                    // à un produit existant, on incrémente la quantité
+                    if(p.id == obj.id && p.colors == obj.colors){
+                        p.quantity += obj.quantity;
+                        // et la variable passe à true
+                        valid = true;
+                    }
+                    return p;
+                })
+                if(!valid){
+                    arr.push(obj);
                 }
-                return p;
-            })
-            if(!alreadyExist){
-                arr.push(obj);
+                
+                localStorage.setItem('panier', JSON.stringify(arr));
             }
-            
-            localStorage.setItem('panier', JSON.stringify(arr));
-            
         }
-        const popupConfirm = (produit) => {
-            if(window.confirm(`L'article suivant a bien été ajouté à votre panier : ${produit.name}`)){
-                window.location.href = 'cart.html';
+        
+        const verifColor = (color) => {
+
+            let validColor = false;
+
+            if(color == '') {
+                window.alert('Veuillez choisir une couleur');
             } else {
-                window.location.href = 'index.html';
+                validColor = true;
+            }
+
+            return validColor;
+        }
+
+        const popupConfirm = (produit) => {
+            if (verifColor(select.value)) {
+                if(window.confirm(`L'article suivant a bien été ajouté à votre panier : ${produit.name} Cliquer sur Annuler pour retourner sur la page d'accueil ou Ok pour voir votre panier.`)){
+                    window.location.href = 'cart.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
             }
         }
+
         // si tabLocalStorage existe, on l'ajoute à la variable array_produit
         // s'il n'existe pas, on créer un tableau
         array_produit = tabLocalStorage ?? []; 
