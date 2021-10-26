@@ -100,25 +100,20 @@ function createInfoProduit(arr) {
         }
         
         const verifColor = (color) => {
-
-            let validColor = false;
-
-            if(color == '') {
-                window.alert('Veuillez choisir une couleur');
-            } else {
-                validColor = true;
-            }
-
-            return validColor;
+            return (color || color == '') ? false : true;
         }
 
         const popupConfirm = (produit) => {
+
             if (verifColor(select.value)) {
-                if(window.confirm(`L'article suivant a bien été ajouté à votre panier : ${produit.name} Cliquer sur Annuler pour retourner sur la page d'accueil ou Ok pour voir votre panier.`)){
-                    window.location.href = 'cart.html';
-                } else {
-                    window.location.href = 'index.html';
-                }
+                window.alert('Veuillez choisir une couleur');
+                return;
+            }
+
+            if(window.confirm(`L'article suivant a bien été ajouté à votre panier : ${produit.name} Cliquer sur Annuler pour retourner sur la page d'accueil ou Ok pour voir votre panier.`)){
+                window.location.href = 'cart.html';
+            } else {
+                window.location.href = 'index.html';
             }
         }
 
