@@ -79,36 +79,29 @@ function createInfoProduit(arr) {
         const addProductStorage = (arr, obj) => {
             // je créer une variable de test qui est false
             let valid = false;
-
-            if (verifColor(select.value)) {
-                arr.map( p => {
-                    // si l'id et la couleur du produit à ajouter correspond déjà
-                    // à un produit existant, on incrémente la quantité
-                    if(p.id == obj.id && p.colors == obj.colors){
-                        p.quantity += obj.quantity;
-                        // et la variable passe à true
-                        valid = true;
-                    }
-                    return p;
-                })
-                if(!valid){
-                    arr.push(obj);
+            
+            arr.map( p => {
+                // si l'id et la couleur du produit à ajouter correspond déjà
+                // à un produit existant, on incrémente la quantité
+                if(p.id == obj.id && p.colors == obj.colors){
+                    p.quantity += obj.quantity;
+                    // et la variable passe à true
+                    valid = true;
                 }
-                
-                localStorage.setItem('panier', JSON.stringify(arr));
+                return p;
+            })
+            if(!valid){
+                arr.push(obj);
             }
+            
+            localStorage.setItem('panier', JSON.stringify(arr));
         }
         
         const verifColor = (color) => {
-            return (color || color == '') ? false : true;
+            return (!color || color == '') ? false : true;
         }
 
         const popupConfirm = (produit) => {
-
-            if (!verifColor(select.value)) {
-                window.alert('Veuillez choisir une couleur');
-                return;
-            }
 
             if(window.confirm(`L'article suivant a bien été ajouté à votre panier : ${produit.name} Cliquer sur Annuler pour retourner sur la page d'accueil ou Ok pour voir votre panier.`)){
                 window.location.href = 'cart.html';
@@ -120,6 +113,13 @@ function createInfoProduit(arr) {
         // si tabLocalStorage existe, on l'ajoute à la variable array_produit
         // s'il n'existe pas, on créer un tableau
         array_produit = tabLocalStorage ?? []; 
+
+        // verifcation avant ajout panier si couleur existe bien
+        if (!verifColor(optionsProduit.colors)) {
+            window.alert('Veuillez choisir une couleur');
+            return;
+        }
+        // ajout element dans panier
         addProductStorage(array_produit, optionsProduit);
         popupConfirm(optionsProduit);
     });
@@ -130,4 +130,3 @@ function createInfoProduit(arr) {
         price.textContent = e.target.value * arr.price;
     }
 }
-
