@@ -105,7 +105,7 @@ function createInfoProduit(arr) {
 
         const popupConfirm = (produit) => {
 
-            if (verifColor(select.value)) {
+            if (!verifColor(select.value)) {
                 window.alert('Veuillez choisir une couleur');
                 return;
             }
